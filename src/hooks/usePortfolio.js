@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
-  collection, doc, onSnapshot,
+  collection, doc, onSnapshot, getDocs,
   addDoc, updateDoc, deleteDoc,
   serverTimestamp, writeBatch,
 } from 'firebase/firestore';
@@ -83,10 +83,22 @@ export function usePortfolio() {
       setLoading(true);
     }
 
-    // Firestore가 항상 소스 오브 트루스 — 자동복구 로직 제거
-    // (자동복구가 다른 기기 데이터를 덮어쓰는 버그 원인이었음)
     const colRef = collection(db, 'users', user.uid, 'stocks');
-    const unsub  = onSnapshot(
+
+    // 페이지 로드 시 서버에서 즉시 한 번 직접 조회 (캐시 무시)
+    getDocs(colRef).then((snap) => {
+      const data = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      data.sort((a, b) => (a.createdAt?.seconds ?? 0) - (b.createdAt?.seconds ?? 0));
+      setStocks(data);
+      writeJSON(cacheKey, data);
+      setLoading(false);
+    }).catch((err) => {
+      console.error('[Firestore] getDocs 실패:', err.code, err.message);
+      setLoading(false);
+    });
+
+    // 실시간 리스너 (다른 기기 변경사항 즉시 반영)
+    const unsub = onSnapshot(
       colRef,
       (snap) => {
         const data = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
@@ -95,7 +107,8 @@ export function usePortfolio() {
         writeJSON(cacheKey, data);
         setLoading(false);
       },
-      () => {
+      (err) => {
+        console.error('[Firestore] onSnapshot 실패:', err.code, err.message);
         setLoading(false);
       }
     );
