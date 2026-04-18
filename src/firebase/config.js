@@ -1,9 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import {
-  initializeFirestore,
-  persistentLocalCache,
-  persistentSingleTabManager,
-} from 'firebase/firestore';
+import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
@@ -17,9 +13,9 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-export const db   = initializeFirestore(app, {
-  localCache: persistentLocalCache({
-    tabManager: persistentSingleTabManager(),
-  }),
-});
+// persistentLocalCache/persistentSingleTabManager 제거:
+// - 앱 시작 시 IndexedDB 초기화로 10~15초 지연 발생
+// - singleTabManager가 lock을 점유해 다른 기기에서 데이터 미조회
+// usePortfolio.js의 localStorage 캐시가 오프라인/빠른 로딩을 담당함
+export const db   = getFirestore(app);
 export const auth = getAuth(app);
