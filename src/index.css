@@ -1,0 +1,324 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 20% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 221 83% 53%;
+    --primary: 221 83% 53%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 20%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 210 40% 94%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --radius: 0.75rem;
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+    border-color: hsl(var(--border));
+  }
+
+  html, body {
+    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+    padding: 0;
+  }
+
+  ::-webkit-scrollbar { display: none; }
+  * { -ms-overflow-style: none; scrollbar-width: none; }
+}
+
+/* ── 앱 전체 레이아웃 ── */
+.app-shell {
+  display: flex;
+  min-height: 100dvh;
+}
+
+/* ── 사이드바 (데스크탑) ── */
+.sidebar {
+  display: none;
+}
+
+/* ── 하단 네비 (모바일) ── */
+.bottom-nav {
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: hsl(var(--card));
+  border-top: 1px solid hsl(var(--border));
+  z-index: 40;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ── 메인 콘텐츠 ── */
+.main-content {
+  flex: 1;
+  min-width: 0;
+  padding-bottom: 80px;
+}
+
+/* ── 데스크탑 (768px 이상) ── */
+@media (min-width: 768px) {
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    width: 240px;
+    min-height: 100dvh;
+    background: hsl(var(--card));
+    border-right: 1px solid hsl(var(--border));
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 40;
+    padding: 28px 16px;
+  }
+
+  .bottom-nav { display: none; }
+
+  .main-content {
+    margin-left: 240px;
+    padding-bottom: 40px;
+    max-width: calc(100vw - 240px);
+  }
+
+  .page-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 36px 36px 40px;
+  }
+
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .dashboard-grid-full {
+    grid-column: 1 / -1;
+  }
+
+  .stock-card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .portfolio-list-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 767px) {
+  .page-inner {
+    padding: 20px 16px 0;
+  }
+
+  .dashboard-grid,
+  .dashboard-grid-full,
+  .stock-card-grid,
+  .portfolio-list-grid {
+    display: block;
+  }
+}
+
+/* ── 모달 ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.modal-sheet {
+  background: hsl(var(--card));
+  border-radius: 24px 24px 0 0;
+  border-top: 1px solid hsl(var(--border));
+  width: 100%;
+  max-width: 560px;
+  max-height: 92dvh;
+  overflow-y: auto;
+  padding: 8px 20px 40px;
+}
+
+.modal-handle {
+  width: 36px;
+  height: 4px;
+  background: hsl(var(--border));
+  border-radius: 2px;
+  margin: 12px auto 20px;
+}
+
+/* ── 입력 필드 ── */
+.input-field {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid hsl(var(--border));
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+}
+
+.input-field:focus {
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.12);
+}
+
+.input-field::placeholder {
+  color: hsl(var(--muted-foreground));
+}
+
+/* ── 버튼 ── */
+.btn-primary {
+  width: 100%;
+  padding: 13px 20px;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border: none;
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+  letter-spacing: -0.01em;
+}
+.btn-primary:hover { background: hsl(221 83% 47%); box-shadow: 0 2px 8px hsl(var(--primary) / 0.3); }
+.btn-primary:active { transform: scale(0.98); }
+
+.btn-secondary {
+  width: 100%;
+  padding: 13px 20px;
+  background: hsl(var(--secondary));
+  color: hsl(var(--secondary-foreground));
+  border: 1.5px solid hsl(var(--border));
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-secondary:hover { background: hsl(var(--accent)); }
+
+/* ── 카드 ── */
+.card {
+  background: hsl(var(--card));
+  border-radius: var(--radius);
+  padding: 18px;
+  border: 1px solid hsl(var(--border));
+  box-shadow: var(--tw-shadow, 0 1px 3px 0 rgb(0 0 0 / 0.05));
+}
+
+/* ── 세그먼트 컨트롤 ── */
+.segmented-control {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  background: hsl(var(--muted));
+  border-radius: 999px;
+  border: 1px solid hsl(var(--border));
+}
+
+.segmented-control__button {
+  border: none;
+  background: transparent;
+  color: hsl(var(--muted-foreground));
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+
+.segmented-control__button.is-active {
+  background: hsl(var(--card));
+  color: hsl(var(--primary));
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);
+}
+
+/* ── 자산군 그리드 ── */
+.asset-group-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 767px) {
+  .asset-group-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── 모바일 FAB ── */
+.refresh-fab {
+  display: flex;
+  position: fixed;
+  bottom: 76px;
+  right: 16px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: none;
+  background: hsl(var(--primary));
+  color: white;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px hsl(var(--primary) / 0.4);
+  cursor: pointer;
+  z-index: 39;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.refresh-fab:active { transform: scale(0.92); }
+.refresh-fab:disabled { background: hsl(var(--muted-foreground)); box-shadow: none; cursor: not-allowed; }
+
+@media (min-width: 768px) {
+  .refresh-fab { display: none; }
+}
+
+/* ── 애니메이션 ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.2s ease forwards; }
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
