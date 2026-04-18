@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
 import { PortfolioProvider } from './contexts/PortfolioContext';
 import { BottomNav, Sidebar, RefreshFAB } from './components/BottomNav';
+import InstallPrompt from './components/InstallPrompt';
 import { TrendingUp } from 'lucide-react';
 
 const Dashboard   = lazy(() => import('./pages/Dashboard'));
@@ -17,6 +18,7 @@ function AuthenticatedApp() {
       <div className="app-shell">
         <Sidebar />
         <main className="main-content">
+          <InstallPrompt />
           <Suspense fallback={<PageSpinner />}>
             <Routes>
               <Route path="/"          element={<Dashboard />} />
@@ -69,5 +71,5 @@ export default function App() {
 
   return user
     ? <AuthenticatedApp />
-    : <Suspense fallback={null}><Login /></Suspense>;
+    : <><InstallPrompt /><Suspense fallback={null}><Login /></Suspense></>;
 }

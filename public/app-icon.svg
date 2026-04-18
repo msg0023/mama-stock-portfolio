@@ -1,0 +1,53 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1024" height="1024" rx="240" fill="url(#bg)"/>
+  <circle cx="786" cy="238" r="112" fill="url(#sun)" opacity="0.95"/>
+  <path d="M130 736C196 644 266 598 340 598C402 598 458 632 526 632C602 632 646 574 716 574C776 574 834 610 894 684V828C894 866.66 862.66 898 824 898H200C161.34 898 130 866.66 130 828V736Z" fill="url(#ground)" opacity="0.9"/>
+  <rect x="188" y="170" width="648" height="548" rx="72" fill="rgba(255,255,255,0.12)"/>
+  <rect x="188" y="170" width="648" height="548" rx="72" fill="url(#glass)"/>
+  <rect x="234" y="222" width="556" height="444" rx="44" fill="#0D2743" fill-opacity="0.72"/>
+  <g opacity="0.16">
+    <path d="M266 278H758" stroke="white" stroke-width="10" stroke-linecap="round"/>
+    <path d="M266 382H758" stroke="white" stroke-width="10" stroke-linecap="round"/>
+    <path d="M266 486H758" stroke="white" stroke-width="10" stroke-linecap="round"/>
+    <path d="M266 590H758" stroke="white" stroke-width="10" stroke-linecap="round"/>
+    <path d="M320 250V638" stroke="white" stroke-width="10" stroke-linecap="round"/>
+    <path d="M472 250V638" stroke="white" stroke-width="10" stroke-linecap="round"/>
+    <path d="M624 250V638" stroke="white" stroke-width="10" stroke-linecap="round"/>
+  </g>
+  <path d="M288 560L396 468L492 520L626 378L738 432" stroke="url(#line)" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="288" cy="560" r="24" fill="#FFE38B"/>
+  <circle cx="396" cy="468" r="24" fill="#FFE38B"/>
+  <circle cx="492" cy="520" r="24" fill="#FFE38B"/>
+  <circle cx="626" cy="378" r="24" fill="#FFE38B"/>
+  <circle cx="738" cy="432" r="24" fill="#FFE38B"/>
+  <path d="M396 746C396 676.412 452.412 620 522 620C591.588 620 648 676.412 648 746C648 815.588 591.588 872 522 872C452.412 872 396 815.588 396 746Z" fill="url(#coin)"/>
+  <path d="M522 680V812" stroke="#F6FFF7" stroke-width="34" stroke-linecap="round"/>
+  <path d="M462 734C462 708.042 486.042 688 522 688C557.958 688 582 707.195 582 734C582 760.805 557.958 780 522 780C486.042 780 462 799.195 462 826" stroke="#F6FFF7" stroke-width="34" stroke-linecap="round"/>
+  <defs>
+    <linearGradient id="bg" x1="130" y1="90" x2="842" y2="950" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0D2035"/>
+      <stop offset="0.4" stop-color="#15588B"/>
+      <stop offset="1" stop-color="#27A36D"/>
+    </linearGradient>
+    <linearGradient id="sun" x1="674" y1="126" x2="898" y2="350" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFEBA8"/>
+      <stop offset="1" stop-color="#FFB85C"/>
+    </linearGradient>
+    <linearGradient id="ground" x1="170" y1="608" x2="840" y2="912" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#113A52"/>
+      <stop offset="1" stop-color="#1F7A57"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="188" y1="170" x2="836" y2="718" gradientUnits="userSpaceOnUse">
+      <stop stop-color="white" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="white" stop-opacity="0.04"/>
+    </linearGradient>
+    <linearGradient id="line" x1="288" y1="560" x2="738" y2="378" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#86F3C7"/>
+      <stop offset="1" stop-color="#FFE38B"/>
+    </linearGradient>
+    <linearGradient id="coin" x1="414" y1="632" x2="630" y2="860" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#16A34A"/>
+      <stop offset="1" stop-color="#14532D"/>
+    </linearGradient>
+  </defs>
+</svg>
