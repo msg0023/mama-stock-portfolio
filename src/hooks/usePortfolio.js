@@ -19,14 +19,6 @@ function getCacheKey(uid, email) {
   return 'portfolio-cache:guest';
 }
 
-function getRecoveryKey(email) {
-  return `portfolio-recovery:${normalizeEmail(email)}`;
-}
-
-function getGlobalRecoveryIndexKey() {
-  return 'portfolio-recovery:index';
-}
-
 function readJSON(key) {
   try {
     const raw = localStorage.getItem(key);
@@ -42,41 +34,6 @@ function writeJSON(key, value) {
   } catch (_) {
     // localStorage can fail in private mode or when full.
   }
-}
-
-function buildRecoveryPayload(stocks, user) {
-  return {
-    email: normalizeEmail(user?.email),
-    updatedAt: Date.now(),
-    stocks,
-  };
-}
-
-function saveRecoverySnapshot(stocks, user) {
-  const payload = buildRecoveryPayload(stocks, user);
-  const emailKey = getRecoveryKey(user?.email);
-  writeJSON(emailKey, payload);
-
-  const indexKey = getGlobalRecoveryIndexKey();
-  const index = readJSON(indexKey) || [];
-  const nextIndex = [
-    emailKey,
-    ...index.filter((item) => item !== emailKey),
-  ].slice(0, 5);
-  writeJSON(indexKey, nextIndex);
-}
-
-function loadRecoverySnapshot(user) {
-  const emailKey = getRecoveryKey(user?.email);
-  const directMatch = readJSON(emailKey);
-  if (directMatch?.stocks?.length) return directMatch;
-
-  const index = readJSON(getGlobalRecoveryIndexKey()) || [];
-  for (const key of index) {
-    const candidate = readJSON(key);
-    if (candidate?.stocks?.length) return candidate;
-  }
-  return null;
 }
 
 function normalizeImportedStocks(stocks) {
@@ -101,11 +58,10 @@ function normalizeImportedStocks(stocks) {
 
 export function usePortfolio() {
   const { user } = useAuth();
-  const [stocks,        setStocks]        = useState([]);
-  const [prices,        setPrices]        = useState({});
-  const [loading,       setLoading]       = useState(true);
-  const [priceLoading,  setPriceLoading]  = useState(false);
-  const [recoveredOnce, setRecoveredOnce] = useState(false);
+  const [stocks,       setStocks]       = useState([]);
+  const [prices,       setPrices]       = useState({});
+  const [loading,      setLoading]      = useState(true);
+  const [priceLoading, setPriceLoading] = useState(false);
 
   // Firestore 실시간 리스너
   useEffect(() => {
@@ -113,52 +69,30 @@ export function usePortfolio() {
       setStocks([]);
       setPrices({});
       setLoading(false);
-      setRecoveredOnce(false);
       return;
     }
 
-    const cacheKeys = [
-      getCacheKey(user.uid, user.email),
-      getCacheKey('', normalizeEmail(user.email)),
-    ];
+    const cacheKey = getCacheKey(user.uid, user.email);
 
-    const cached = cacheKeys
-      .map((key) => readJSON(key))
-      .find((value) => Array.isArray(value));
-
-    if (cached?.length) {
+    // localStorage 캐시로 즉시 표시 (빠른 초기 렌더링)
+    const cached = readJSON(cacheKey);
+    if (Array.isArray(cached) && cached.length) {
       setStocks(cached);
       setLoading(false);
     } else {
       setLoading(true);
     }
 
+    // Firestore가 항상 소스 오브 트루스 — 자동복구 로직 제거
+    // (자동복구가 다른 기기 데이터를 덮어쓰는 버그 원인이었음)
     const colRef = collection(db, 'users', user.uid, 'stocks');
     const unsub  = onSnapshot(
       colRef,
       (snap) => {
         const data = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-        // 정렬: 등록 순
         data.sort((a, b) => (a.createdAt?.seconds ?? 0) - (b.createdAt?.seconds ?? 0));
-
-        if (!data.length && !recoveredOnce) {
-          const recovery = loadRecoverySnapshot(user);
-          if (recovery?.stocks?.length) {
-            const recoveredStocks = normalizeImportedStocks(recovery.stocks);
-            importStocks(recoveredStocks).catch(() => {});
-            setStocks(recoveredStocks);
-            cacheKeys.forEach((key) => writeJSON(key, recoveredStocks));
-            setRecoveredOnce(true);
-            setLoading(false);
-            return;
-          }
-        }
-
         setStocks(data);
-        cacheKeys.forEach((key) => writeJSON(key, data));
-        if (data.length) {
-          saveRecoverySnapshot(data, user);
-        }
+        writeJSON(cacheKey, data);
         setLoading(false);
       },
       () => {
